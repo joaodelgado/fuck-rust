@@ -57,11 +57,11 @@ fn main() {
             '<' => cursor -= 1,
             '[' => {
                 if mem[cursor] == 0 {
-                    pc = *jumps.get(&pc).unwrap();
+                    pc = jumps[&pc];
                 }
             }
             ']' => {
-                pc = *jumps.get(&pc).unwrap();
+                pc = jumps[&pc];
                 pc -= 1;
             }
             '.' => print!("{}", mem[cursor] as char),
