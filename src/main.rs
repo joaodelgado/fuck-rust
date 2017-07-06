@@ -7,15 +7,15 @@ use std::collections::HashMap;
 
 fn match_jumps(program: &String) -> HashMap<usize, usize> {
     let mut stack = Vec::new();
-    let mut matches_map: HashMap<usize, usize> = HashMap::new();
+    let mut jumps_map: HashMap<usize, usize> = HashMap::new();
 
     for (i, c) in program.chars().enumerate() {
         match c {
             '[' => stack.push(i),
             ']' => {
                 let other = stack.pop().expect("Non matching parenthesis");
-                matches_map.insert(other, i);
-                matches_map.insert(i, other);
+                jumps_map.insert(other, i);
+                jumps_map.insert(i, other);
             }
             _ => {}
         }
@@ -25,7 +25,7 @@ fn match_jumps(program: &String) -> HashMap<usize, usize> {
         panic!("Non matching parenthesis");
     }
 
-    matches_map
+    jumps_map
 }
 
 fn main() {
@@ -44,36 +44,35 @@ fn main() {
     }
 
     let mut mem: Vec<u8> = vec![0; 30000]; // memory vector
-    let mut ip = 0; // pointer for the current instruction char
-    let mut mp = 0; // pointer for the current memory index
+    let mut pc = 0; // pointer for the current instruction char
+    let mut cursor = 0; // pointer for the current memory index
 
     let jumps = match_jumps(&program);
 
-    while ip < program.len() {
-        let c = program.chars().nth(ip).unwrap();
-        match c {
-            '+' => mem[mp] = mem[mp].wrapping_add(1),
-            '-' => mem[mp] = mem[mp].wrapping_sub(1),
-            '>' => mp += 1,
-            '<' => mp -= 1,
+    while pc < program.len() {
+        match program.chars().nth(pc).unwrap() {
+            '+' => mem[cursor] = mem[cursor].wrapping_add(1),
+            '-' => mem[cursor] = mem[cursor].wrapping_sub(1),
+            '>' => cursor += 1,
+            '<' => cursor -= 1,
             '[' => {
-                if mem[mp] == 0 {
-                    ip = *jumps.get(&ip).unwrap();
+                if mem[cursor] == 0 {
+                    pc = *jumps.get(&pc).unwrap();
                 }
             }
             ']' => {
-                ip = *jumps.get(&ip).unwrap();
-                ip -= 1;
+                pc = *jumps.get(&pc).unwrap();
+                pc -= 1;
             }
-            '.' => print!("{}", mem[mp] as char),
+            '.' => print!("{}", mem[cursor] as char),
             ',' => {
                 let mut buf = [0u8];
                 io::stdin().read_exact(&mut buf).expect("Error reading from stdin");
-                mem[mp] = buf[0];
+                mem[cursor] = buf[0];
             }
             _ => {}
         }
-        ip += 1;
+        pc += 1;
     }
 
 }
