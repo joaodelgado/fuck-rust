@@ -1,9 +1,9 @@
+use std::collections::HashMap;
 use std::env;
-use std::io;
-use std::path::Path;
 use std::fs::File;
 use std::io::Read;
-use std::collections::HashMap;
+use std::io;
+use std::path::Path;
 
 fn match_jumps(program: &String) -> HashMap<usize, usize> {
     let mut stack = Vec::new();
