@@ -1,9 +1,9 @@
 # fuck-rust
-Brainfuck compiler in Rust
+Brainfuck interpreter in Rust
 
 # How to run
 
-The compiler accepts either a complete program
+The interpreter accepts either a complete program
 
     cargo run ">++++[-<+>]"
 
